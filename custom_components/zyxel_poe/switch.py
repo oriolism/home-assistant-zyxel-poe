@@ -11,14 +11,16 @@ from aiohttp import ClientResponse
 import voluptuous as vol
 
 from homeassistant.const import STATE_ON, STATE_OFF
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchEntity
-from homeassistant.const import CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SCAN_INTERVAL
+from homeassistant.components.switch import SwitchEntity, SwitchDeviceClass
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SCAN_INTERVAL, Platform
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.exceptions import PlatformNotReady
-
-REQUIREMENTS = ['beautifulsoup4==4.7.1']
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,10 +32,6 @@ DEVICES_SCHEMA = vol.Schema({
     vol.Required(CONF_HOST): cv.string,
     vol.Required(CONF_USERNAME): cv.string,
     vol.Required(CONF_PASSWORD): cv.string,
-})
-
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_DEVICES): vol.All(cv.ensure_list, [DEVICES_SCHEMA]),
 })
 
 
@@ -63,7 +61,10 @@ def encode(_input):
 
 
 async def async_setup_platform(
-        hass, config, async_add_entities, discovery_info=None):
+        hass: HomeAssistant, 
+        config: ConfigType,
+        async_add_entities: AddEntitiesCallback,
+        discovery_info: DiscoveryInfoType = None) -> None:
     """Set up the zyxel-poe sensor platform."""
 
     for device_config in config[CONF_DEVICES]:
@@ -85,6 +86,10 @@ async def async_setup_platform(
         async_add_entities(switches, False)
 
 class ZyxelPoeSwitch(SwitchEntity):
+    """Representation of a ZyXEL PoE switch."""
+    
+    _attr_device_class = SwitchDeviceClass.OUTLET
+    _attr_has_entity_name = True
     def __init__(self, poe_data, host, port):
         self._poe_data = poe_data
         self._host = host
