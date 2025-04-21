@@ -85,6 +85,29 @@ async def async_setup_platform(
 
         async_add_entities(switches, False)
 
+async def async_setup_entry(
+        hass: HomeAssistant,
+        config_entry: ConfigEntry,
+        async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the ZyXEL PoE switch from a config entry."""
+    host = config_entry.data[CONF_HOST]
+    username = config_entry.data[CONF_USERNAME]
+    password = config_entry.data[CONF_PASSWORD]
+    interval = SCAN_INTERVAL
+
+    session = async_create_clientsession(hass, cookie_jar=aiohttp.CookieJar(unsafe=True))
+
+    poe_data = ZyxelPoeData(host, username, password, interval, session)
+
+    await poe_data.async_update()
+
+    switches = []
+    for port, data in poe_data.ports.items():
+        switches.append(ZyxelPoeSwitch(poe_data, host, port))
+
+    async_add_entities(switches, False)
+
 class ZyxelPoeSwitch(SwitchEntity):
     """Representation of a ZyXEL PoE switch."""
     
