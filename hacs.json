@@ -1,5 +1,8 @@
 {
-    "name": "ZyXEL Power-over-Ethernet",
-    "render_readme": true
-  }
+  "name": "ZyXEL Power-over-Ethernet",
+  "render_readme": true,
+  "content_in_root": false,
+  "domains": ["zyxel_poe"],
+  "homeassistant": "2023.1.0"
+}
   
