@@ -26,7 +26,8 @@ Should be compatible with similar models.
 
 This integration is available in HACS (Home Assistant Community Store). Search for "ZyXEL PoE" in HACS and install it directly.
 
-### Method 2: Home Assistant UI
+## Configuration 
+Home Assistant UI
 
 This integration supports configuration through the Home Assistant UI:
 
@@ -35,7 +36,7 @@ This integration supports configuration through the Home Assistant UI:
 3. Search for "ZyXEL PoE" and select it
 4. Follow the configuration steps to add your ZyXEL switch
 
-### Method 3: Manual Installation
+### Method 2: Manual Installation
 
 To install manually, copy the `zyxel_poe` folder into your [custom_components folder](https://developers.home-assistant.io/docs/en/creating_component_loading.html).
 
